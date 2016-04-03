@@ -41,7 +41,7 @@ shinyUI(navbarPage("Growth-Curves",theme="Slate.css",
           
           tabPanel("Models",
                    tags$hr(),        
-                     column(4, wellPanel(
+                     column(3, wellPanel(
                       uiOutput("Dep"),
                       uiOutput("VarI"),
                       uiOutput("Interaction"),
@@ -49,7 +49,7 @@ shinyUI(navbarPage("Growth-Curves",theme="Slate.css",
                      #uiOutput("Todos"),
                      
                      
-                   )), column(8,wellPanel(mainPanel(tableOutput("regTab")),tableOutput("Anov")))),
+                   )), column(10,wellPanel(mainPanel(tableOutput("regTab")),tableOutput("Anov")))),
           navbarMenu("Plots",                       
                      tabPanel("Growes-curves",                   
                               column(6,plotOutput("GrPlot")),
