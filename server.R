@@ -86,8 +86,15 @@ shinyServer(function(input, output) {
       For<-as.formula(paste(Dep," ~ ",predictors))
      
      #For<-as.formula(paste("Tumor.volume..mm3."," ~ ",paste(c("Days","Treatment"),collapse= "*")))
-       
-       lm(For,data=datasetInput())
+     
+     
+      A1<-as.data.frame(datasetInput())
+      for(i in 1: ncol(A1)){
+      if(is.factor(A1[,i])){
+      A1[,i]<-relevel(A1[,i], ref = 4)
+      }
+      }
+       lm(For,data=A1)
   
    })
    
@@ -100,7 +107,7 @@ shinyServer(function(input, output) {
          } else {
        print(data.frame(Warning="Please select Model Parameters."))
      }
-   })
+   },digits=-5)
    
    output$Anov <- renderTable({
      if(!is.null(input$VarInd)){
@@ -108,7 +115,7 @@ shinyServer(function(input, output) {
         } else {
        print(data.frame(Warning="Please select Model Parameters."))
      }
-   })
+   },digits=-5)
 
    output$Yvar<- renderUI({
      if(is.null(inputVariable()))
@@ -138,25 +145,28 @@ shinyServer(function(input, output) {
    
 GrowPlot<- reactive({ 
   
-Data<-datasetInput()
-if(is.numeric(Data[,input$Facto])) return(NULL) 
-if(is.character(Data[,input$YVari])) return(NULL)
-
-p<-ggplot(Data, aes(as.numeric(Data[,input$XVari]),as.numeric(Data[,input$YVari]), color=as.factor(Data[,input$Facto]))) +
-stat_summary(fun.data=mean_se, geom="pointrange")+
-aes(colour = as.factor(Data[,input$Facto])) + stat_summary(fun.y = mean, geom="line") +
-labs(y=as.character(input$YVari), x=as.character(input$XVari))+
-theme(legend.title=element_blank())+ 
-theme(axis.title.y = element_text(size = rel(input$cexLab), angle = 90))+
-theme(axis.title.x = element_text(size = rel(input$cexLab), angle = 00))
-p
+  Data<-datasetInput()
+  if(is.null(Data)){
+    return()
+  }else{
+  if(is.numeric(Data[,input$Facto])) return(NULL) 
+  if(is.character(Data[,input$YVari])) return(NULL)
+  
+   p<-ggplot(Data, aes(as.numeric(Data[,input$XVari]),as.numeric(Data[,input$YVari]), color=as.factor(Data[,input$Facto]))) +
+    stat_summary(fun.data=mean_se, geom="pointrange")+
+    aes(colour = as.factor(Data[,input$Facto])) + stat_summary(fun.y = mean, geom="line") +
+    labs(y=as.character(input$YVari), x=as.character(input$XVari))+
+    theme(legend.title=element_blank())+ 
+    theme(axis.title.y = element_text(size = rel(input$cexLab), angle = 90))+
+    theme(axis.title.x = element_text(size = rel(input$cexLab), angle = 00))
+  p}
    })
 
 output$GrPlot<- renderPlot({ 
   if(is.null(GrowPlot())){
     return("warning: select any var to plot")
   }
-  GrowPlot()
+GrowPlot()
   
 })
 
