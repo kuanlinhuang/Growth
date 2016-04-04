@@ -145,21 +145,31 @@ shinyServer(function(input, output) {
    
 GrowPlot<- reactive({ 
   
-  Data<-datasetInput()
-  if(is.null(Data)){
+  Datas<-datasetInput()
+  if(is.null(Datas)){
     return()
   }else{
-  if(is.numeric(Data[,input$Facto])) return(NULL) 
-  if(is.character(Data[,input$YVari])) return(NULL)
-  
-   p<-ggplot(Data, aes(as.numeric(Data[,input$XVari]),as.numeric(Data[,input$YVari]), color=as.factor(Data[,input$Facto]))) +
-    stat_summary(fun.data=mean_se, geom="pointrange")+
-    aes(colour = as.factor(Data[,input$Facto])) + stat_summary(fun.y = mean, geom="line") +
-    labs(y=as.character(input$YVari), x=as.character(input$XVari))+
-    theme(legend.title=element_blank())+ 
-    theme(axis.title.y = element_text(size = rel(input$cexLab), angle = 90))+
-    theme(axis.title.x = element_text(size = rel(input$cexLab), angle = 00))
-  p}
+  if(is.numeric(Datas[,input$Facto])) return(NULL) 
+  if(is.character(Datas[,input$YVari])) return(NULL)
+ 
+    
+  # p<-ggplot(Datas, aes(as.numeric(Datas[,input$XVari]),as.numeric(Datas[,input$YVari]), color=as.factor(Datas[,input$Facto]))) +
+  #  stat_summary(fun.data=mean_se, geom="pointrange")+
+  #  aes(colour = as.factor(Datas[,input$Facto])) + stat_summary(fun.y = mean, geom="line") +
+  #  labs(y=as.character(input$YVari), x=as.character(input$XVari))+
+  #  theme(legend.title=element_blank())+ 
+  #  theme(axis.title.y = element_text(size = rel(input$cexLab), angle = 90))+
+  #  theme(axis.title.x = element_text(size = rel(input$cexLab), angle = 00))
+    p<-ggplot(Datas, aes_string(as.character(input$XVari),as.character(input$YVari), color=as.character(input$Facto))) +
+      stat_summary(fun.data=mean_se, geom="pointrange")+
+      aes_string(colour = as.character(input$Facto)) + stat_summary(fun.y = mean, geom="line") +
+      labs(y=as.character(input$YVari), x=as.character(input$XVari))+
+      theme(legend.title=element_blank())+ 
+      theme(axis.title.y = element_text(size = rel(input$cexLab), angle = 90))+
+      theme(axis.title.x = element_text(size = rel(input$cexLab), angle = 00))
+    
+   
+    p}
    })
 
 output$GrPlot<- renderPlot({ 
@@ -189,11 +199,11 @@ output$FactoD<- renderUI({
 
 DensPlot<- reactive({ 
   
-  Data<-datasetInput()
+  Datas<-datasetInput()
   
-  if(is.numeric(Data[,input$FactoDD])) return(NULL) 
-  if(is.character(Data[,input$VarTDe])) return(NULL) 
-  qplot(as.numeric(Data[,input$VarTDe]), geom="density", fill=as.factor(Data[,input$FactoDD]), alpha=I(.5),
+  if(is.numeric(Datas[,input$FactoDD])) return(NULL) 
+  if(is.character(Datas[,input$VarTDe])) return(NULL) 
+  qplot(as.numeric(Datas[,input$VarTDe]), geom="density", fill=as.factor(Datas[,input$FactoDD]), alpha=I(.5),
         main="", xlab=as.character(input$VarTDe),
         ylab="Density")+theme(legend.title=element_blank())
   
